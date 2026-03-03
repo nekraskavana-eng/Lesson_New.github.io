@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Учебный курс Python: Введение и графика</title>
+    <style>
+        /* Базовые стили (CSS) для каркаса */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            background-color: #f5f5f5;
+        }
+
+        /* Верхняя панель (Шапка) */
+        .top-bar {
+            background-color: #4B8BBE; /* Цвет Python */
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .course-image {
+            width: 50px;
+            height: 50px;
+            background-color: #FFD43B; /* Цвет питона */
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #306998;
+        }
+
+        .top-menu {
+            display: flex;
+            gap: 20px;
+            font-size: 18px;
+        }
+
+        .top-menu-item {
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            font-weight: 500;
+        }
+
+        .top-menu-item:hover {
+            background-color: #306998;
+        }
+
+        .top-menu-item.active {
+            background-color: #FFD43B;
+            color: #1e3c5c;
+            font-weight: bold;
+        }
+
+        /* Основной контейнер (Меню слева + Контент справа) */
+        .main-container {
+            display: flex;
+            flex: 1;
+            overflow: hidden;
+        }
+
+        /* Левое меню (Занятия) */
+        .sidebar {
+            width: 280px;
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            overflow-y: auto;
+            padding: 20px 0;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+
+        .module-title {
+            padding: 10px 20px;
+            background-color: #1e2b38;
+            font-weight: bold;
+            font-size: 1.1em;
+            letter-spacing: 1px;
+            border-left: 5px solid #FFD43B;
+            margin: 10px 0 5px 0;
+        }
+
+        .lesson-item {
+            padding: 12px 20px 12px 35px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border-left: 3px solid transparent;
+            font-size: 0.95em;
+        }
+
+        .lesson-item:hover {
+            background-color: #34495e;
+            border-left-color: #4B8BBE;
+        }
+
+        .lesson-item.active {
+            background-color: #4B8BBE;
+            border-left-color: #FFD43B;
+            font-weight: 500;
+        }
+
+        /* Правый блок (Контент) */
+        .content-area {
+            flex: 1;
+            padding: 25px 30px;
+            overflow-y: auto;
+            background-color: white;
+        }
+
+        /* Стили для вкладок Теория/Практика внутри контента */
+        .content-tabs {
+            display: flex;
+            gap: 2px;
+            margin-bottom: 25px;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .content-tab {
+            padding: 10px 25px;
+            font-size: 1.1em;
+            cursor: pointer;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            border-bottom: none;
+            border-radius: 5px 5px 0 0;
+            transition: background-color 0.2s;
+        }
+
+        .content-tab.active {
+            background-color: #4B8BBE;
+            color: white;
+            border-color: #4B8BBE;
+        }
+
+        /* Стили для блоков с теорией и практикой */
+        .theory-block, .practice-block {
+            display: none; /* Скрыты по умолчанию */
+            line-height: 1.6;
+            font-size: 1.1em;
+        }
+
+        .theory-block.active, .practice-block.active {
+            display: block;
+        }
+
+        /* Оформление кода (как на каркасе) */
+        pre {
+            background-color: #282c34;
+            color: #abb2bf;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 15px;
+            margin: 15px 0;
+            border-left: 5px solid #FFD43B;
+        }
+
+        code {
+            font-family: 'Courier New', monospace;
+        }
+
+        /* Стили для интерактива в практике */
+        .code-editor-area {
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 20px 0 15px 0;
+            border: 1px solid #444;
+        }
+
+        .code-editor-header {
+            background-color: #333;
+            color: #ddd;
+            padding: 8px 15px;
+            font-size: 0.9em;
+            border-bottom: 1px solid #555;
+        }
+
+        .code-textarea {
+            width: 100%;
+            min-height: 180px;
+            background-color: #1e1e1e;
+            border: none;
+            color: #d4d4d4;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            padding: 15px;
+            resize: vertical;
+            outline: none;
+            line-height: 1.5;
+        }
+
+        .run-button {
+            background-color: #FFD43B;
+            color: #1e3c5c;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 10px 0 20px 0;
+            transition: all 0.2s;
+            border: 1px solid #e6b800;
+        }
+
+        .run-button:hover {
+            background-color: #f0c000;
+            transform: scale(1.02);
+        }
+
+        .output-console {
+            background-color: #262626;
+            color: #00ff80;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            margin-top: 15px;
+            border-left: 5px solid #4B8BBE;
+            white-space: pre-wrap;
+        }
+
+        .output-placeholder {
+            color: #aaa;
+            font-style: italic;
+        }
+
+        hr {
+            margin: 25px 0 15px 0;
+            border: 1px dashed #ccc;
+        }
+
+        .note-comment {
+            background-color: #e8f4fd;
+            border-left: 5px solid #4B8BBE;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+            color: #2c3e50;
+        }
+        
+        .info-box {
+            background-color: #f0f8ff;
+            border: 1px solid #4B8BBE;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+        
+        .warning-box {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #856404;
+        }
+        
+        .term-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        
+        .term-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .term-list li strong {
+            color: #4B8BBE;
+            display: inline-block;
+            width: 120px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Верхняя часть: Картинка курса и меню Теория/Практика -->
+    <div class="top-bar">
+        <div class="course-image">
+            Py
+        </div>
+        <div class="top-menu">
+            <div class="top-menu-item active" data-top="theory">📖 Теория</div>
+            <div class="top-menu-item" data-top="practice">💻 Практика</div>
+        </div>
+    </div>
+
+    <!-- Основная часть: Левое меню и контент справа -->
+    <div class="main-container">
+        <!-- Левое меню (Список занятий) -->
+        <div class="sidebar">
+            <div class="module-title">Модуль 1: Знакомство и первая графика (Занятия 1-6)</div>
+            
+            <div class="lesson-item active" data-lesson="1">🐍 1. Введение в Python. Первые шаги</div>
+            <div class="lesson-item" data-lesson="2">📦 2. Переменные и типы данных</div>
+            <div class="lesson-item" data-lesson="3">🐢 3. Знакомство с модулем Turtle</div>
+            <div class="lesson-item" data-lesson="4">📏 4. Turtle: рисуем линии</div>
+            <div class="lesson-item" data-lesson="5">🎨 5. Turtle: фигуры и цвет</div>
+            <div class="lesson-item" data-lesson="6">⌨️ 6. Turtle: события клавиш</div>
+        </div>
+
+        <!-- Правый блок (Контент) -->
+        <div class="content-area" id="contentArea">
+            <div class="content-tabs">
+                <div class="content-tab active" data-content-tab="theory">📖 Теория</div>
+                <div class="content-tab" data-content-tab="practice">💻 Практика</div>
+            </div>
+
+            <!-- Блок для отображения теории -->
+            <div id="theoryBlock" class="theory-block active"></div>
+
+            <!-- Блок для отображения практики -->
+            <div id="practiceBlock" class="practice-block"></div>
+        </div>
+    </div>
+
+    <script>
+        // Элементы DOM
+        const topMenuItems = document.querySelectorAll('.top-menu-item');
+        const contentTabs = document.querySelectorAll('.content-tab');
+        const theoryBlock = document.getElementById('theoryBlock');
+        const practiceBlock = document.getElementById('practiceBlock');
+        const lessonItems = document.querySelectorAll('.lesson-item');
+
+        // ПОЛНЫЕ ДАННЫЕ ДЛЯ ВСЕХ УРОКОВ
+        const lessonsData = {
+            1: {
+                theory: {
+                    title: "🐍 Введение в Python. Первые шаги",
+                    content: `
+                        <h2>Введение в Python. Первые шаги</h2>
+                        
+                        <div class="info-box">
+                            <strong>🎯 Цель урока:</strong> Познакомиться с языком Python, научиться писать первую программу и понимать базовые принципы работы интерпретатора.
+                        </div>
+                        
+                        <h3>Что такое Python?</h3>
+                        <p>Python — это высокоуровневый язык программирования, созданный Гвидо ван Россумом в 1991 году. Его основные преимущества:</p>
+                        <ul>
+                            <li>Простой и понятный синтаксис</li>
+                            <li>Интерпретируемый язык (не требует компиляции)</li>
+                            <li>Огромное количество библиотек</li>
+                            <li>Поддержка различных парадигм программирования</li>
+                        </ul>
+                        
+                        <h3>Установка Python</h3>
+                        <p>Для начала работы необходимо установить Python с официального сайта <a href="https://python.org" target="_blank">python.org</a>. После установки вы сможете запускать программы через:</p>
+                        <ul>
+                            <li><strong>IDLE</strong> — встроенная среда разработки</li>
+                            <li><strong>Командную строку/терминал</strong></li>
+                            <li><strong>Редакторы кода</strong> (VS Code, PyCharm)</li>
+                        </ul>
+                        
+                        <h3>Первая программа</h3>
+                        <p>Традиционно первой программой является вывод приветствия "Hello, World!":</p>
+                        <pre><code>print("Hello, World!")</code></pre>
+                        <p>Функция <code>print()</code> выводит текст на экран. Текст обязательно заключается в кавычки (одинарные или двойные).</p>
+                        
+                        <h3>Комментарии в коде</h3>
+                        <p>Комментарии помогают документировать код и не выполняются интерпретатором:</p>
+                        <pre><code># Это однострочный комментарий
+print("Привет!")  # Комментарий после кода
+
+"""
+Многострочный
+комментарий
+"""</code></pre>
+                        
+                        <h3>Основные понятия</h3>
+                        <ul class="term-list">
+                            <li><strong>Интерпретатор</strong> - программа, выполняющая Python-код</li>
+                            <li><strong>Скрипт</strong> - файл с Python-кодом (.py)</li>
+                            <li><strong>Выражение</strong> - конструкция, возвращающая значение</li>
+                            <li><strong>Инструкция</strong> - команда, выполняющая действие</li>
+                        </ul>
+                        
+                        <div class="warning-box">
+                            ⚠️ <strong>Важно:</strong> Python чувствителен к регистру! print и Print - это разные вещи. Также важны отступы (пробелы или табуляция).
+                        </div>
+                        
+                        <h3>Режимы работы с Python</h3>
+                        <p><strong>Интерактивный режим:</strong> запускается командой <code>python</code> в терминале, позволяет выполнять код построчно.</p>
+                        <p><strong>Режим скриптов:</strong> создание файла с расширением .py и его выполнение.</p>
+                        
+                        <div class="note-comment">
+                            📝 <strong>Дополнительный материал:</strong> Попробуйте использовать print() с разными типами данных: числами, строками, выражениями.
+                        </div>
+                    `
+                },
+                practice: {
+                    title: "💪 Практика: Первые шаги в Python",
+                    task: "Выполните задания, чтобы закрепить материал:",
+                    exercises: [
+                        "1️⃣ Напишите программу, которая выводит 'Мой первый код!'",
+                        "2️⃣ Выведите на экран свое имя и возраст",
+                        "3️⃣ Используйте print() для вычисления 2 + 2 * 3",
+                        "4️⃣ Напишите программу с комментариями, объясняющими каждый шаг"
+                    ],
+                    initialCode: `# Моя первая программа
+print("Мой первый код!")
+
+# Задание 2: имя и возраст
+print("Меня зовут Анна, мне 12 лет")
+
+# Задание 3: вычисления
+print(2 + 2 * 3)
+
+# Задание 4: добавьте свои комментарии
+# Здесь можно написать что-то важное`
+                }
+            },
+            2: {
+                theory: {
+                    title: "📦 Переменные и типы данных",
+                    content: `
+                        <h2>Переменные и типы данных</h2>
+                        
+                        <div class="info-box">
+                            <strong>🎯 Цель урока:</strong> Изучить различные типы данных в Python и научиться работать с переменными.
+                        </div>
+                        
+                        <h3>Что такое переменные?</h3>
+                        <p>Переменная — это именованная область памяти для хранения данных. В Python переменные создаются в момент первого присваивания значения:</p>
+                        <pre><code>name = "Анна"        # строковая переменная
+age = 25            # целое число
+height = 1.75       # число с плавающей точкой
+is_student = True   # логическое значение</code></pre>
+                        
+                        <h3>Правила именования переменных</h3>
+                        <ul>
+                            <li>Могут содержать буквы, цифры и знак подчеркивания</li>
+                            <li>Не могут начинаться с цифры</li>
+                            <li>Чувствительны к регистру (name и Name - разные)</li>
+                            <li>Нельзя использовать ключевые слова (if, for, while и т.д.)</li>
+                        </ul>
+                        
+                        <h3>Основные типы данных</h3>
+                        <table style="width:100%; border-collapse: collapse; margin:15px 0;">
+                            <tr style="background-color:#4B8BBE; color:white;">
+                                <th style="padding:10px; border:1px solid #ddd;">Тип</th>
+                                <th style="padding:10px; border:1px solid #ddd;">Название</th>
+                                <th style="padding:10px; border:1px solid #ddd;">Пример</th>
+                            </tr>
+                            <tr>
+                                <td style="padding:8px; border:1px solid #ddd;">int</td>
+                                <td style="padding:8px; border:1px solid #ddd;">Целое число</td>
+                                <td style="padding:8px; border:1px solid #ddd;">10, -5, 1000</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:8px; border:1px solid #ddd;">float</td>
+                                <td style="padding:8px; border:1px solid #ddd;">Дробное число</td>
+                                <td style="padding:8px; border:1px solid #ddd;">3.14, -0.5, 2.0</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:8px; border:1px solid #ddd;">str</td>
+                                <td style="padding:8px; border:1px solid #ddd;">Строка</td>
+                                <td style="padding:8px; border:1px solid #ddd;">"Привет", 'Python'</td>
+                            </tr>
+                            <tr>
+                                <td style="padding:8px; border:1px solid #ddd;">bool</td>
+                                <td style="padding:8px; border:1px solid #ddd;">Логический</td>
+                                <td style="padding:8px; border:1px solid #ddd;">True, False</td>
+                            </tr>
+                        </table>
+                        
+                        <h3>Ввод и вывод данных</h3>
+                        <p>Для ввода данных используется функция <code>input()</code>:</p>
+                        <pre><code>name = input("Как тебя зовут? ")
+print("Привет,", name)</code></pre>
+                        
+                        <h3>Преобразование типов</h3>
+                        <pre><code># Преобразование в разные типы
+number_str = "123"
+number_int = int(number_str)      # в целое число
+number_float = float(number_str)  # в дробное число
+
+age = 25
+age_str = str(age)                 # в строку</code></pre>
+                        
+                        <h3>f-строки (форматирование)</h3>
+                        <p>Удобный способ вставки переменных в строку:</p>
+                        <pre><code>name = "Анна"
+age = 25
+print(f"Меня зовут {name}, мне {age} лет")</code></pre>
+                        
+                        <div class="note-comment">
+                            📝 <strong>Важно:</strong> Тип переменной в Python динамический - он определяется автоматически и может меняться!
+                        </div>
+                    `
+                },
+                practice: {
+                    title: "💪 Практика: Переменные и типы данных",
+                    task: "Выполните задания по работе с переменными:",
+                    exercises: [
+                        "1️⃣ Создайте переменные name, age, height с вашими данными",
+                        "2️⃣ Выведите их разными способами (обычный print и f-строка)",
+                        "3️⃣ Запросите у пользователя его любимый цвет и выведите сообщение",
+                        "4️⃣ Создайте две переменные с числами и выведите их сумму",
+                        "5️⃣ Преобразуйте строку '123' в число и умножьте на 2"
+                    ],
+                    initialCode: `# Задание 1: переменные с данными
+name = "Алексей"
+age = 15
+height = 1.65
+
+# Задание 2: вывод
+print("Имя:", name, "Возраст:", age, "Рост:", height)
+print(f"Меня зовут {name}, мне {age} лет, мой рост {height} м")
+
+# Задание 3: ввод данных
+color = input("Какой твой любимый цвет? ")
+print(f"{color} - отличный выбор!")
+
+# Задание 4: числа
+a = 15
+b = 7
+print(f"Сумма: {a + b}")
+
+# Задание 5: преобразование
+number = int("123")
+print(f"Результат: {number * 2}")`
+                }
+            },
+            3: {
+                theory: {
+                    title: "🐢 Знакомство с модулем Turtle",
+                    content: `
+                        <h2>Модуль Turtle - рисование черепашкой</h2>
+                        
+                        <div class="info-box">
+                            <strong>🎯 Цель урока:</strong> Познакомиться с графическим модулем Turtle и научиться создавать простые рисунки.
+                        </div>
+                        
+                        <h3>Что такое Turtle?</h3>
+                        <p>Turtle (черепашка) — это встроенный модуль Python для обучения программированию. Черепашка рисует линии, перемещаясь по экрану.</p>
+                        
+                        <h3>Подключение модуля</h3>
+                        <pre><code>import turtle  # полный импорт модуля
+
+# Или
+from turtle import *  # импорт всех функций</code></pre>
+                        
+                        <h3>Создание черепашки</h3>
+                        <pre><code>import turtle
+
+# Создаем черепашку
+t = turtle.Turtle()
+
+# Основные команды
+t.forward(100)      # вперед на 100 пикселей
+t.backward(50)      # назад на 50 пикселей
+t.left(90)          # поворот налево на 90 градусов
+t.right(45)         # поворот направо на 45 градусов
+
+# Завершение программы
+turtle.done()       # оставляет окно открытым</code></pre>
+                        
+                        <h3>Настройки черепашки</h3>
+                        <pre><code>t.speed(1)      # скорость (1-10, где 10 - максимальная)
+t.pensize(3)    # толщина линии
+t.color("blue") # цвет линии
+t.shape("turtle") # форма черепашки</code></pre>
+                        
+                        <h3>Управление пером</h3>
+                        <pre><code>t.penup()    # поднять перо (не рисовать)
+t.pendown()  # опустить перо (рисовать)</code></pre>
+                        
+                        <h3>Пример: простой квадрат</h3>
+                        <pre><code>import turtle
+
+t = turtle.Turtle()
+t.speed(3)
+
+# Рисуем квадрат
+t.forward(100)
+t.left(90)
+t.forward(100)
+t.left(90)
+t.forward(100)
+t.left(90)
+t.forward(100)
+
+turtle.done()</code></pre>
+                        
+                        <div class="warning-box">
+                            ⚠️ <strong>Важно:</strong> Не забывайте вызывать turtle.done() в конце программы, иначе окно закроется сразу!
+                        </div>
+                        
+                        <h3>Основные команды Turtle</h3>
+                        <ul class="term-list">
+                            <li><strong>forward(n)</strong> - вперед на n пикселей</li>
+                            <li><strong>backward(n)</strong> - назад на n пикселей</li>
+                            <li><strong>right(angle)</strong> - поворот направо</li>
+                            <li><strong>left(angle)</strong> - поворот налево</li>
+                            <li><strong>goto(x, y)</strong> - перейти в точку</li>
+                            <li><strong>setheading(angle)</strong> - установить направление</li>
+                            <li><strong>circle(r)</strong> - нарисовать круг</li>
+                        </ul>
+                        
+                        <div class="note-comment">
+                            📝 <strong>Эксперимент:</strong> Попробуйте изменять углы поворота и длины линий, чтобы создавать разные фигуры!
+                        </div>
+                    `
+                },
+                practice: {
+                    title: "💪 Практика: Знакомство с Turtle",
+                    task: "Создайте различные рисунки с помощью черепашки:",
+                    exercises: [
+                        "1️⃣ Нарисуйте квадрат со стороной 150 пикселей",
+                        "2️⃣ Нарисуйте треугольник (повороты по 120 градусов)",
+                        "3️⃣ Нарисуйте прямоугольник 200x100 пикселей",
+                        "4️⃣ Нарисуйте звездочку или домик (проявите фантазию)"
+                    ],
+                    initialCode: `import turtle
+
+# Создаем черепашку
+t = turtle.Turtle()
+t.speed(3)
+t.pensize(2)
+t.color("blue")
+
+# Задание 1: квадрат
+t.forward(150)
+t.left(90)
+t.forward(150)
+t.left(90)
+t.forward(150)
+t.left(90)
+t.forward(150)
+
+# Поднимаем перо и перемещаем для следующего рисунка
+t.penup()
+t.goto(-200, 0)
+t.pendown()
+t.color("red")
+
+# Задание 2: треугольник
+for i in range(3):
+    t.forward(100)
+    t.left(120)
+
+t.penup()
+t.goto(200, 0)
+t.pendown()
+t.color("green")
+
+# Задание 3: прямоугольник
+t.forward(200)
+t.left(90)
+t.forward(100)
+t.left(90)
+t.forward(200)
+t.left(90)
+t.forward(100)
+
+turtle.done()`
+                }
+            },
+            4: {
+                theory: {
+                    title: "📏 Turtle: рисуем линии и узоры",
+                    content: `
+                        <h2>Продвинутое рисование линий в Turtle</h2>
+                        
+                        <div class="info-box">
+                            <strong>🎯 Цель урока:</strong> Научиться создавать сложные узоры и использовать циклы для рисования.
+                        </div>
+                        
+                        <h3>Использование циклов для рисования</h3>
+                        <p>Циклы помогают автоматизировать повторяющиеся действия:</p>
+                        <pre><code>import turtle
+t = turtle.Turtle()
+
+# Квадрат через цикл
+for i in range(4):
+    t.forward(100)
+    t.left(90)
+
+# Спираль
+for i in range(20):
+    t.forward(i * 5)  # длина увеличивается
+    t.left(90)</code></pre>
+                        
+                        <h3>Изменение цвета в цикле</h3>
+                        <pre><code>colors = ["red", "blue", "green", "orange", "purple"]
+
+for color in colors:
+    t.color(color)
+    t.forward(50)
+    t.left(72)  # для пятиугольника</code></pre>
+                        
+                        <h3>Рисование узоров</h3>
+                        <pre><code># Звезда
+for i in range(5):
+    t.forward(100)
+    t.right(144)  # угол для пятиконечной звезды
+
+# Спираль с изменением цвета
+for i in range(36):
+    t.color(i/36, 0, 1-i/36)  # RGB цвета
+    t.forward(i * 3)
+    t.left(30)</code></pre>
+                        
+                        <h3>Полезные команды</h3>
+                        <pre><code>t.clear()      # очистить рисунок
+t.reset()      # сбросить все настройки
+t.home()       # вернуться в центр
+t.begin_fill() # начать заливку
+t.end_fill()   # закончить заливку</code></pre>
+                        
+                        <div class="note-comment">
+                            📝 <strong>Идея:</strong> Попробуйте создать "розу ветров" из линий, поворачивая черепашку на небольшой угол много раз.
+                        </div>
+                    `
+                },
+                practice: {
+                    title: "💪 Практика: Линии и узоры",
+                    task: "Создайте интересные узоры с помощью циклов:",
+                    exercises: [
+                        "1️⃣ Нарисуйте спираль из 50 витков",
+                        "2️⃣ Создайте узор из 36 линий, поворачивая на 10 градусов",
+                        "3️⃣ Нарисуйте звезду с 10 лучами",
+                        "4️⃣ Создайте цветок из нескольких лепестков"
+                    ],
+                    initialCode: `import turtle
+
+t = turtle.Turtle()
+t.speed(10)
+t.pensize(1)
+
+# Задание 1: спираль
+for i in range(50):
+    t.forward(i * 2)
+    t.left(30)
+
+# Очищаем и рисуем новое
+t.clear()
+t.penup()
+t.goto(-200, 100)
+t.pendown()
+
+# Задание 2: веер из линий
+for i in range(36):
+    t.forward(100)
+    t.backward(100)
+    t.left(10)
+
+t.penup()
+t.goto(200, -100)
+t.pendown()
+
+# Задание 3: звезда
+for i in range(10):
+    t.forward(150)
+    t.right(144)  # угол для 10-конечной звезды
+
+t.penup()
+t.goto(-200, -100)
+t.pendown()
+t.color("pink")
+
+# Задание 4: цветок
+for i in range(12):
+    t.circle(50)
+    t.left(30)
+
+turtle.done()`
+                }
+            },
+            5: {
+                theory: {
+                    title: "🎨 Turtle: фигуры, цвет и заливка",
+                    content: `
+                        <h2>Цвет и заливка в Turtle</h2>
+                        
+                        <div class="info-box">
+                            <strong>🎯 Цель урока:</strong> Научиться использовать цвета, заливку и создавать сложные геометрические фигуры.
+                        </div>
+                        
+                        <h3>Работа с цветом</h3>
+                        <p>В Turtle можно задавать цвет тремя способами:</p>
+                        <pre><code># По названию
+t.color("red")
+t.color("blue")
+
+# В формате RGB (0-1)
+t.color(0.5, 0.2, 0.8)  # (red, green, blue)
+
+# В формате HEX (как в вебе)
+t.color("#FF5733")</code></pre>
+                        
+                        <h3>Заливка фигур</h3>
+                        <pre><code>t.begin_fill()    # начать заливку
+t.color("yellow") # цвет линии
+t.fillcolor("red") # цвет заливки
+# или
+t.color("red", "yellow")  # линия красная, заливка желтая
+
+# Рисуем фигуру
+for i in range(4):
+    t.forward(100)
+    t.left(90)
+    
+t.end_fill()      # закончить заливку</code></pre>
+                        
+                        <h3>Рисование кругов и дуг</h3>
+                        <pre><code># Полный круг
+t.circle(50)  # радиус 50
+
+# Дуга (часть круга)
+t.circle(50, 180)  # половина круга
+
+# Многоугольники через круг
+t.circle(50, steps=6)  # шестиугольник, вписанный в круг</code></pre>
+                        
+                        <h3>Пример: радуга</h3>
+                        <pre><code>colors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"]
+t.pensize(3)
+
+for i, color in enumerate(colors):
+    t.color(color)
+    t.circle(100 - i*10)  # круги разного размера</code></pre>
+                        
+                        <h3>Дополнительные возможности</h3>
+                        <pre><code># Штриховка
+t.pensize(1)
+t.pen(fillcolor="red", pencolor="blue", pensize=2)
+
+# Фон
+turtle.bgcolor("lightblue")</code></pre>
+                        
+                        <div class="warning-box">
+                            ⚠️ <strong>Важно:</strong> Заливка работает только для замкнутых фигур! Убедитесь, что черепашка вернулась в начальную точку.
+                        </div>
+                    `
+                },
+                practice: {
+                    title: "💪 Практика: Цветные фигуры",
+                    task: "Создайте красочные рисунки с заливкой:",
+                    exercises: [
+                        "1️⃣ Нарисуйте красный квадрат с синей заливкой",
+                        "2️⃣ Создайте цветной круг с градиентом",
+                        "3️⃣ Нарисуйте радугу из 7 цветов",
+                        "4️⃣ Создайте мозаику из разноцветных квадратов"
+                    ],
+                    initialCode: `import turtle
+
+t = turtle.Turtle()
+t.speed(8)
+
+# Задание 1: квадрат с заливкой
+t.penup()
+t.goto(-250, 150)
+t.pendown()
+t.color("blue", "red")
+t.begin_fill()
+for i in range(4):
+    t.forward(80)
+    t.left(90)
+t.end_fill()
+
+# Задание 2: круг с градиентом
+t.penup()
+t.goto(100, 150)
+t.pendown()
+for i in range(36):
+    t.color(i/36, 0.5, 1-i/36)
+    t.circle(50 + i)
+    t.right(10)
+
+# Задание 3: радуга
+t.penup()
+t.goto(-250, -50)
+t.pendown()
+colors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"]
+t.pensize(5)
+for i, color in enumerate(colors):
+    t.color(color)
+    t.circle(70 - i*8)
+    t.penup()
+    t.right(90)
+    t.forward(8)
+    t.left(90)
+    t.pendown()
+
+# Задание 4: мозаика
+t.penup()
+t.goto(100, -150)
+t.pendown()
+size = 30
+for row in range(4):
+    for col in range(4):
+        t.color("black", f"#{row}{col}{row+col}")
+        t.begin_fill()
+        for i in range(4):
+            t.forward(size)
+            t.right(90)
+        t.end_fill()
+        t.forward(size)
+    t.penup()
+    t.backward(size * 4)
+    t.right(90)
+    t.forward(size)
+    t.left(90)
+    t.pendown()
+
+turtle.done()`
+                }
+            },
+            6: {
+                theory: {
+                    title: "⌨️ Turtle: события клавиш и анимация",
+                    content: `
+                        <h2>Интерактивность в Turtle</h2>
+                        
+                        <div class="info-box">
+                            <strong>🎯 Цель урока:</strong> Научиться обрабатывать нажатия клавиш и создавать интерактивные программы.
+                        </div>
+                        
+                        <h3>Обработка событий клавиш</h3>
+                        <pre><code>import turtle
+
+def move_forward():
+    t.forward(10)
+
+def move_backward():
+    t.backward(10)
+
+def turn_left():
+    t.left(15)
+
+def turn_right():
+    t.right(15)
+
+t = turtle.Turtle()
+screen = turtle.Screen()
+
+# Привязка клавиш к функциям
+screen.onkey(move_forward, "Up")    # стрелка вверх
+screen.onkey(move_backward, "Down") # стрелка вниз
+screen.onkey(turn_left, "Left")     # стрелка влево
+screen.onkey(turn_right, "Right")   # стрелка вправо
+
+screen.listen()  # начать прослушивание клавиш
+turtle.done()</code></pre>
+                        
+                        <h3>Обработка мыши</h3>
+                        <pre><code>def click_handler(x, y):
+    print(f"Клик в точке ({x}, {y})")
+    t.goto(x, y)  # переместить черепашку
+
+screen.onclick(click_handler)</code></pre>
+                        
+                        <h3>Очистка и сброс</h3>
+                        <pre><code>def clear_screen():
+    t.clear()
+
+def reset_position():
+    t.penup()
+    t.home()
+    t.pendown()
+
+screen.onkey(clear_screen, "c")
+screen.onkey(reset_position, "r")</code></pre>
+                        
+                        <h3>Анимация</h3>
+                        <pre><code># Отключаем автоматическое обновление
+screen.tracer(0)
+
+def animate():
+    t.forward(1)
+    t.left(1)
+    screen.update()  # обновляем экран
+    screen.ontimer(animate, 10)  # повтор через 10 мс
+
+animate()</code></pre>
+                        
+                        <h3>Смена цвета по клавишам</h3>
+                        <pre><code>def set_red():
+    t.color("red")
+
+def set_blue():
+    t.color("blue")
+
+screen.onkey(set_red, "r")
+screen.onkey(set_blue, "b")</code></pre>
+                        
+                        <div class="note-comment">
+                            📝 <strong>Совет:</strong> Комбинируйте движение с изменением цвета и размера для создания интересных эффектов!
+                        </div>
+                        
+                        <h3>Полный пример интерактивной программы</h3>
+                        <pre><code>import turtle
+
+t = turtle.Turtle()
+screen = turtle.Screen()
+
+def move():
+    t.forward(10)
+
+def change_color():
+    import random
+    r = random.random()
+    g = random.random()
+    b = random.random()
+    t.color(r, g, b)
+
+def stamp():
+    t.stamp()  # оставить отпечаток
+
+screen.onkey(move, "space")
+screen.onkey(change_color, "c")
+screen.onkey(stamp, "s")
+screen.onkey(t.clear, "Delete")
+screen.listen()
+
+turtle.done()</code></pre>
+                    `
+                },
+                practice: {
+                    title: "💪 Практика: Интерактивная графика",
+                    task: "Создайте интерактивную программу с управлением:",
+                    exercises: [
+                        "1️⃣ Сделайте управление черепашкой стрелками",
+                        "2️⃣ Добавьте смену цвета по нажатию клавиш (R, G, B)",
+                        "3️⃣ Реализуйте очистку экрана по клавише C",
+                        "4️⃣ Добавьте возможность рисовать круги по клику мыши",
+                        "5️⃣ Создайте простую анимацию"
+                    ],
+                    initialCode: `import turtle
+
+# Создаем черепашку и экран
+t = turtle.Turtle()
+screen = turtle.Screen()
+t.speed(5)
+
+# Функции для управления
+def move_forward():
+    t.forward(20)
+
+def move_backward():
+    t.backward(20)
+
+def turn_left():
+    t.left(15)
+
+def turn_right():
+    t.right(15)
+
+def set_red():
+    t.color("red")
+
+def set_green():
+    t.color("green")
+
+def set_blue():
+    t.color("blue")
+
+def clear_screen():
+    t.clear()
+
+def draw_circle(x, y):
+    t.penup()
+    t.goto(x, y)
+    t.pendown()
+    t.circle(20)
+
+def stamp_turtle():
+    t.stamp()
+
+# Привязываем клавиши
+screen.onkey(move_forward, "Up")
+screen.onkey(move_backward, "Down")
+screen.onkey(turn_left, "Left")
+screen.onkey(turn_right, "Right")
+screen.onkey(set_red, "r")
+screen.onkey(set_green, "g")
+screen.onkey(set_blue, "b")
+screen.onkey(clear_screen, "c")
+screen.onkey(stamp_turtle, "s")
+
+# Привязываем клик мыши
+screen.onclick(draw_circle)
+
+# Начинаем прослушивание
+screen.listen()
+
+# Простая анимация (по желанию)
+def animate():
+    # Здесь можно добавить анимацию
+    screen.ontimer(animate, 100)
+
+# animate()  # раскомментируйте для анимации
+
+turtle.done()`
+                }
+            }
+        };
+
+        // Текущие значения
+        let currentLesson = '1';
+        let currentTopTab = 'theory';
+
+        // Функция переключения теории/практики
+        function setActiveTab(tab) {
+            // Обновляем верхнее меню
+            topMenuItems.forEach(item => {
+                const tabName = item.getAttribute('data-top');
+                if (tabName === tab) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+
+            // Обновляем внутренние вкладки
+            contentTabs.forEach(item => {
+                const tabName = item.getAttribute('data-content-tab');
+                if (tabName === tab) {
+                    item.classList.add('active');
+                } else {
+                    item.classList.remove('active');
+                }
+            });
+
+            // Обновляем блоки
+            if (tab === 'theory') {
+                theoryBlock.classList.add('active');
+                practiceBlock.classList.remove('active');
+            } else {
+                theoryBlock.classList.remove('active');
+                practiceBlock.classList.add('active');
+            }
+
+            // Обновляем контент
+            loadLessonContent(currentLesson, tab);
+            currentTopTab = tab;
+        }
+
+        // Загрузка контента урока
+        function loadLessonContent(lessonId, tab) {
+            const lesson = lessonsData[lessonId];
+            if (!lesson) return;
+
+            if (tab === 'theory') {
+                theoryBlock.innerHTML = lesson.theory.content;
+            } else {
+                const practice = lesson.practice;
+                let exercisesHTML = '';
+                if (practice.exercises) {
+                    exercisesHTML = '<div class="info-box"><strong>📋 Задания:</strong><ul>';
+                    practice.exercises.forEach(ex => {
+                        exercisesHTML += `<li>${ex}</li>`;
+                    });
+                    exercisesHTML += '</ul></div>';
+                }
+                
+                practiceBlock.innerHTML = `
+                    <h2>${practice.title}</h2>
+                    <p>${practice.task}</p>
+                    ${exercisesHTML}
+                    <div class="code-editor-area">
+                        <div class="code-editor-header">main.py</div>
+                        <textarea id="codeEditor" class="code-textarea" placeholder="Введите ваш код Python...">${practice.initialCode.replace(/`/g, '&#96;')}</textarea>
+                    </div>
+                    <button class="run-button" id="runCodeBtn">▶ Выполнить код</button>
+                    <div class="output-console" id="outputConsole">
+                        <span class="output-placeholder">Здесь будет результат выполнения...</span>
+                    </div>
+                    <hr>
+                    <div class="note-comment">
+                        ⚙️ <strong>Для выполнения кода с Turtle:</strong> 
+                        Скопируйте код и запустите его в своей среде разработки, так как браузер не поддерживает графику Turtle.
+                        Или используйте онлайн-тренажер с поддержкой Turtle.
+                    </div>
+                `;
+            }
+        }
+
+        // Обработчик выполнения кода (имитация)
+        function runCodeHandler() {
+            const editor = document.getElementById('codeEditor');
+            const output = document.getElementById('outputConsole');
+            
+            if (!editor) return;
+            
+            const code = editor.value;
+            
+            if (code.includes('turtle') || code.includes('Turtle')) {
+                output.innerHTML = '🐢 Обнаружен код с Turtle! Для выполнения скопируйте код в среду Python на вашем компьютере.';
+            } else if (code.includes('print')) {
+                const matches = code.match(/print\(['"](.*)['"]\)/g);
+                if (matches) {
+                    let result = '';
+                    matches.forEach(match => {
+                        const content = match.replace(/print\(['"]/, '').replace(/['"]\)/, '');
+                        result += content + '\n';
+                    });
+                    output.innerHTML = result || 'Код выполнен (имитация)';
+                } else {
+                    output.innerHTML = 'Код содержит print (имитация выполнения)';
+                }
+            } else {
+                output.innerHTML = 'Код выполнен (имитация). Для вывода используйте print().';
+            }
+        }
+
+        // Переключение урока
+        function setActiveLesson(lessonId) {
+            lessonItems.forEach(item => {
+                item.classList.remove('active');
+            });
+            document.querySelector(`.lesson-item[data-lesson="${lessonId}"]`).classList.add('active');
+            currentLesson = lessonId;
+            loadLessonContent(lessonId, currentTopTab);
+        }
+
+        // Слушатели
+        topMenuItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const tab = item.getAttribute('data-top');
+                setActiveTab(tab);
+            });
+        });
+
+        contentTabs.forEach(item => {
+            item.addEventListener('click', () => {
+                const tab = item.getAttribute('data-content-tab');
+                setActiveTab(tab);
+            });
+        });
+
+        lessonItems.forEach(item => {
+            item.addEventListener('click', () => {
+                const lessonId = item.getAttribute('data-lesson');
+                setActiveLesson(lessonId);
+            });
+        });
+
+        // Инициализация
+        window.addEventListener('load', () => {
+            setActiveTab('theory');
+            setActiveLesson('1');
+        });
+
+        // Глобальный обработчик для кнопки
+        document.addEventListener('click', (e) => {
+            if (e.target && e.target.id === 'runCodeBtn') {
+                runCodeHandler();
+            }
+        });
+
+    </script>
+</body>
+</html>
